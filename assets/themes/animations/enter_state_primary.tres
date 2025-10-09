@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AnimationState" load_steps=2 format=3 uid="uid://73dsdeihq2id"]
+
+[ext_resource type="Script" path="res://scripts/ui/animation_state.gd" id="1_p0q1j"]
+
+[resource]
+script = ExtResource("1_p0q1j")
+duration = 2.0
+delay = 1.0
+transition = 10
+animate_position = true
+position = Vector2(0.01, 0)
+animate_modulate = true
+modulate = Color(1, 1, 1, 0)

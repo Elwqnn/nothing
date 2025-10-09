@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AnimationState" load_steps=2 format=3 uid="uid://jvid7khkenna"]
+
+[ext_resource type="Script" path="res://scripts/ui/animation_state.gd" id="1_p0q1j"]
+
+[resource]
+script = ExtResource("1_p0q1j")
+duration = 0.1
+animate_scale = true
+scale = Vector2(1.1, 1.1)

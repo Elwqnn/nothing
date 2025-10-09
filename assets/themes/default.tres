@@ -1,0 +1,55 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://huvrvsk55ipw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hvkdh"]
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x0tin"]
+content_margin_left = 20.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oa4jb"]
+content_margin_left = 20.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qby0n"]
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ecif"]
+content_margin_left = 20.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fe2o3"]
+content_margin_left = 40.0
+content_margin_top = 40.0
+content_margin_right = 40.0
+content_margin_bottom = 40.0
+
+[resource]
+NewGameButton/base_type = &"TitleButton"
+NewGameButton/colors/font_focus_color = Color(0.98039216, 0.7411765, 0.18431373, 1)
+NewGameButton/colors/font_hover_color = Color(0.98039216, 0.7411765, 0.18431373, 1)
+NewGameButton/colors/font_hover_pressed_color = Color(0.98039216, 0.7411765, 0.18431373, 1)
+NewGameButton/colors/font_pressed_color = Color(0.98039216, 0.7411765, 0.18431373, 1)
+QuitButton/base_type = &"TitleButton"
+QuitButton/colors/font_color = Color(0.8, 0.14117648, 0.11372549, 1)
+QuitButton/colors/font_focus_color = Color(0.8, 0.14117648, 0.11372549, 1)
+QuitButton/colors/font_hover_color = Color(0.8, 0.14117648, 0.11372549, 1)
+QuitButton/colors/font_hover_pressed_color = Color(0.8, 0.14117648, 0.11372549, 1)
+QuitButton/colors/font_pressed_color = Color(0.8, 0.14117648, 0.11372549, 1)
+TitleButton/base_type = &"Button"
+TitleButton/styles/disabled = SubResource("StyleBoxEmpty_hvkdh")
+TitleButton/styles/focus = SubResource("StyleBoxEmpty_hvkdh")
+TitleButton/styles/hover = SubResource("StyleBoxEmpty_x0tin")
+TitleButton/styles/hover_pressed = SubResource("StyleBoxEmpty_oa4jb")
+TitleButton/styles/normal = SubResource("StyleBoxEmpty_qby0n")
+TitleButton/styles/pressed = SubResource("StyleBoxEmpty_0ecif")
+TitlePanelContainer/base_type = &"PanelContainer"
+TitlePanelContainer/styles/normal = null
+TitlePanelContainer/styles/panel = SubResource("StyleBoxEmpty_fe2o3")
+TitleVBoxContainer/base_type = &"VBoxContainer"
+TitleVBoxContainer/constants/separation = 0

@@ -20,7 +20,7 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 
-[node name="PlayerController" type="CharacterBody3D" node_paths=PackedStringArray("camera", "camera_effects", "state_chart", "interaction_raycast")]
+[node name="PlayerController" type="CharacterBody3D" node_paths=PackedStringArray("camera", "camera_effects", "state_chart", "interaction_raycast") groups=["player"]]
 script = ExtResource("1_rkuj1")
 camera = NodePath("CameraController")
 camera_effects = NodePath("CameraController/Camera3D")
@@ -56,6 +56,7 @@ enable_tilt = false
 enable_dynamic_fov = false
 
 [node name="InteractionRaycast" type="RayCast3D" parent="CameraController/Camera3D"]
+target_position = Vector3(0, 0, -3)
 debug_shape_custom_color = Color(1, 0, 0, 1)
 script = ExtResource("4_ggkdx")
 

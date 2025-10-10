@@ -1,13 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6u2xl2vqwepb"]
+[gd_scene load_steps=7 format=3 uid="uid://b6u2xl2vqwepb"]
 
 [ext_resource type="Script" uid="uid://xql4h220pm7x" path="res://scripts/system/game_manager.gd" id="1_rtgv3"]
 [ext_resource type="PackedScene" uid="uid://d356pnybfrkk3" path="res://scenes/system/splash_screen_manager.tscn" id="2_mgb3u"]
 [ext_resource type="Script" uid="uid://dkw7jwefj3wvr" path="res://scripts/system/transition_manager.gd" id="3_cj5kq"]
 [ext_resource type="PackedScene" uid="uid://dnkcnqb5lsyh5" path="res://scenes/player/player_controller.tscn" id="4_player"]
+[ext_resource type="PackedScene" uid="uid://buh6qi17i4xts" path="res://scenes/system/vhs_post_process.tscn" id="5_q6206"]
+[ext_resource type="Script" path="res://scripts/system/audio_manager.gd" id="6_audio"]
 
 [node name="MainScene" type="Node"]
 
 [node name="Managers" type="Node" parent="."]
+
+[node name="AudioManager" type="Node" parent="Managers"]
+unique_name_in_owner = true
+script = ExtResource("6_audio")
 
 [node name="GameManager" type="Node" parent="Managers" node_paths=PackedStringArray("world", "ui")]
 script = ExtResource("1_rtgv3")
@@ -15,13 +21,15 @@ world = NodePath("../../World")
 ui = NodePath("../../UserInterface")
 player_scene = ExtResource("4_player")
 
-[node name="SplashScreenManager" parent="Managers" instance=ExtResource("2_mgb3u")]
-unique_name_in_owner = true
-
 [node name="TransitionManager" type="CanvasLayer" parent="Managers"]
 unique_name_in_owner = true
 script = ExtResource("3_cj5kq")
 
+[node name="SplashScreenManager" parent="Managers" instance=ExtResource("2_mgb3u")]
+unique_name_in_owner = true
+
 [node name="World" type="Node3D" parent="."]
 
 [node name="UserInterface" type="CanvasLayer" parent="."]
+
+[node name="VHSPostProcess" parent="." instance=ExtResource("5_q6206")]

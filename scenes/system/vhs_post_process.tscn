@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://buh6qi17i4xts"]
+
+[ext_resource type="Script" uid="uid://b4n34oaelvfq2" path="res://scripts/system/vhs_post_process.gd" id="1_vhs_script"]
+[ext_resource type="Shader" uid="uid://hrj6t1553v4e" path="res://assets/shaders/vhs_shader.gdshader" id="2_vhs_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vhs"]
+shader = ExtResource("2_vhs_shader")
+shader_parameter/aberration_strength = 2.000000095
+shader_parameter/blur_strength = 1.0000000475
+shader_parameter/noise_strength = 0.02400000114
+shader_parameter/vignette_strength = 0.78
+shader_parameter/scanline_strength = 0.016
+shader_parameter/distortion_strength = 0.1
+shader_parameter/ghost_strength = 0.12
+shader_parameter/flicker_strength = 0.005
+
+[node name="VHSPostProcess" type="CanvasLayer" groups=["vhs_effect"]]
+layer = 128
+script = ExtResource("1_vhs_script")
+
+[node name="VHSEffect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vhs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

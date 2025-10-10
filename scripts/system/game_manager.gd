@@ -18,6 +18,7 @@ var _is_loading: bool = false
 func _ready() -> void:
 	Global.game_manager = self
 	Global.transition_manager = %TransitionManager
+	Global.audio_manager = %AudioManager
 	current_ui_scene = %SplashScreenManager
 
 

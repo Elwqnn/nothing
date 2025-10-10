@@ -1,9 +1,10 @@
-[gd_scene load_steps=25 format=3 uid="uid://b8p0uoju4y3xc"]
+[gd_scene load_steps=24 format=3 uid="uid://b8p0uoju4y3xc"]
 
 [ext_resource type="PackedScene" uid="uid://7uf37vy0h0al" path="res://scenes/env/environment.tscn" id="1_1vgdb"]
-[ext_resource type="Texture2D" uid="uid://bty8yxalnkpiu" path="res://assets/textures/128x128/Dirt/Dirt_19-128x128.png" id="4_i1tyt"]
-[ext_resource type="Texture2D" uid="uid://bxddg5nigdcea" path="res://assets/textures/128x128/Dirt/Dirt_20-128x128.png" id="5_o2pe6"]
-[ext_resource type="Texture2D" uid="uid://uk0jouh202dj" path="res://assets/textures/128x128/Wood/Wood_11-128x128.png" id="6_i1tyt"]
+[ext_resource type="Texture2D" uid="uid://bty8yxalnkpiu" path="res://assets/textures/Dirt/Dirt_19-128x128.png" id="4_i1tyt"]
+[ext_resource type="Texture2D" uid="uid://bxddg5nigdcea" path="res://assets/textures/Dirt/Dirt_20-128x128.png" id="5_o2pe6"]
+[ext_resource type="Texture2D" uid="uid://uk0jouh202dj" path="res://assets/textures/Wood/Wood_11-128x128.png" id="6_i1tyt"]
+[ext_resource type="PackedScene" uid="uid://bwx8k3n7vq4pc" path="res://scenes/world/physics_ball.tscn" id="6_mg2ju"]
 [ext_resource type="VoxelGIData" uid="uid://cv5v2a8hmjbwx" path="res://scenes/world/playground/playground.VoxelGI_data.res" id="6_o2pe6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1vgdb"]
@@ -71,16 +72,6 @@ uv1_triplanar = true
 material = SubResource("StandardMaterial3D_14rtd")
 size = Vector3(1, 4, 9)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i1tyt"]
-albedo_texture = ExtResource("6_i1tyt")
-metallic_specular = 0.0
-uv1_scale = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="BoxMesh" id="BoxMesh_i1tyt"]
-material = SubResource("StandardMaterial3D_i1tyt")
-size = Vector3(10, 1, 8)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rc55k"]
 emission_enabled = true
 emission = Color(0.96839184, 0.95632917, 0.6849467, 1)
@@ -111,6 +102,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_1vgdb")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Room/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("BoxMesh_f7q6m")
+
+[node name="Roof" type="StaticBody3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room/Roof"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_1vgdb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room/Roof"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("BoxMesh_f7q6m")
 
@@ -156,12 +158,10 @@ shape = SubResource("BoxShape3D_mg2ju")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 0)
 mesh = SubResource("BoxMesh_7vt1k")
 
-[node name="Roof" type="MeshInstance3D" parent="Room"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
-mesh = SubResource("BoxMesh_i1tyt")
-skeleton = NodePath("../..")
-
 [node name="Light" type="MeshInstance3D" parent="Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.223784, 0)
 mesh = SubResource("BoxMesh_mg2ju")
 skeleton = NodePath("../..")
+
+[node name="PhysicsBall" parent="." instance=ExtResource("6_mg2ju")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

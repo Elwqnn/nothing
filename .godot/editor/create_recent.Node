@@ -1,5 +1,9 @@
+FuncGodotMap
+MeshInstance3D
+CollisionShape3D
+RigidBody3D
+VBoxContainer
 PanelContainer
 Label
-VBoxContainer
 CenterContainer
 Node3D

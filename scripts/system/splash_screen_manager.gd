@@ -2,8 +2,8 @@ extends Control
 ## manages the splash screen sequence
 
 @export var in_time: float = 0.3
-@export var fade_in_time: float = 0.5
-@export var pause_time: float = 0.8
+@export var fade_in_time: float = 0.6
+@export var pause_time: float = 1.6
 @export var fade_out_time: float = 0.5
 @export var out_time: float = 0.3
 @export var splash_screen_container: Control
@@ -21,6 +21,8 @@ var can_skip: bool = true
 
 func _ready() -> void:
 	_get_screens()
+	if Global.audio_manager:
+		Global.audio_manager.play_sfx("neon_light_flickering", 0.6)
 	_fade()
 
 func _input(event: InputEvent) -> void:
@@ -75,4 +77,9 @@ func _change_scene() -> void:
 	if is_transitioning:
 		return
 	is_transitioning = true
+	
+	# fade out splash screen sound effect before transitioning
+	if Global.audio_manager:
+		Global.audio_manager.stop_sfx(0.5)  # 0.5 second fade out
+	
 	Global.game_manager.change_ui_scene(MAIN_MENU_SCENE)

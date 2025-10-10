@@ -1,4 +1,0 @@
-FuncGodotMapSettings
-FuncGodotFGDFile
-TrenchBroomGameConfig
-FuncGodotLocalConfig

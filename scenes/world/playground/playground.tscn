@@ -1,10 +1,9 @@
-[gd_scene load_steps=24 format=3 uid="uid://b8p0uoju4y3xc"]
+[gd_scene load_steps=23 format=3 uid="uid://b8p0uoju4y3xc"]
 
 [ext_resource type="PackedScene" uid="uid://7uf37vy0h0al" path="res://scenes/env/environment.tscn" id="1_1vgdb"]
 [ext_resource type="Texture2D" uid="uid://bty8yxalnkpiu" path="res://assets/textures/Dirt/Dirt_19-128x128.png" id="4_i1tyt"]
 [ext_resource type="Texture2D" uid="uid://bxddg5nigdcea" path="res://assets/textures/Dirt/Dirt_20-128x128.png" id="5_o2pe6"]
 [ext_resource type="Texture2D" uid="uid://uk0jouh202dj" path="res://assets/textures/Wood/Wood_11-128x128.png" id="6_i1tyt"]
-[ext_resource type="PackedScene" uid="uid://bwx8k3n7vq4pc" path="res://scenes/world/physics_ball.tscn" id="6_mg2ju"]
 [ext_resource type="VoxelGIData" uid="uid://cv5v2a8hmjbwx" path="res://scenes/world/playground/playground.VoxelGI_data.res" id="6_o2pe6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1vgdb"]
@@ -162,6 +161,3 @@ mesh = SubResource("BoxMesh_7vt1k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.223784, 0)
 mesh = SubResource("BoxMesh_mg2ju")
 skeleton = NodePath("../..")
-
-[node name="PhysicsBall" parent="." instance=ExtResource("6_mg2ju")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

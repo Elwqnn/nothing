@@ -1,0 +1,54 @@
+[gd_scene load_steps=5 format=3 uid="uid://brxn42m7yw8qf"]
+
+[ext_resource type="Script" uid="uid://ddabrq0dak0et" path="res://scripts/enemy/entity.gd" id="1_entity_script"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_r5nws"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_entity"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_catch"]
+radius = 1.5
+
+[node name="Entity" type="CharacterBody3D" groups=["entity"]]
+script = ExtResource("1_entity_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+shape = SubResource("CapsuleShape3D_r5nws")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_entity")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.5
+target_desired_distance = 0.5
+path_max_distance = 3.0
+avoidance_enabled = true
+
+[node name="CatchArea" type="Area3D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CatchArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("SphereShape3D_catch")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+attenuation_model = 2
+max_distance = 25.0
+max_polyphony = 3
+attenuation_filter_cutoff_hz = 3000.0
+
+[node name="WanderTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="SoundTimer" type="Timer" parent="."]
+wait_time = 8.0
+autostart = true
+
+[connection signal="body_entered" from="CatchArea" to="." method="_on_catch_area_body_entered"]
+[connection signal="timeout" from="WanderTimer" to="." method="_on_wander_timer_timeout"]
+[connection signal="timeout" from="SoundTimer" to="." method="_on_sound_timer_timeout"]

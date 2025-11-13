@@ -2,6 +2,7 @@ extends Control
 
 const PLAYGROUND_SCENE: String = "res://scenes/world/playground/playground.tscn"
 const LEVEL1_SCENE: String = "res://scenes/world/level1/level1.tscn"
+const MAZE_SCENE: String = "res://scenes/world/maze/maze_generator_3d.tscn"
 const GAME_HUD_SCENE: String = "res://scenes/ui/game_hud.tscn"
 const SETTINGS_SCENE: String = "res://scenes/ui/settings_menu.tscn"
 
@@ -23,11 +24,16 @@ func _ready() -> void:
 func _on_new_game_pressed() -> void:
 	await Global.transition_manager.fade_out()
 
+	# Load maze level and game HUD
 	Global.game_manager.change_ui_scene(GAME_HUD_SCENE)
-	await Global.game_manager.change_world_scene(PLAYGROUND_SCENE, true, true, false, false)
-	
-	if Global.audio_manager:
-		Global.audio_manager.play_music("feldup_findings", 4.0, true)
+	await Global.game_manager.change_world_scene(MAZE_SCENE, true, true, false, false)
+
+	# Start game music
+	#if Global.audio_manager:
+		#Global.audio_manager.play_music("", 4.0, true)
+
+	# Start the game timer and systems
+	Global.game_manager.start_game()
 
 	await Global.transition_manager.fade_in()
 

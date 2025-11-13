@@ -85,4 +85,3 @@ func _on_quit_pressed() -> void:
 	
 	if Global.transition_manager:
 		await Global.transition_manager.fade_in()
-

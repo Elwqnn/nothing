@@ -40,7 +40,7 @@ window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/godot_state_charts/plugin.cfg")
+enabled=PackedStringArray("res://addons/SimpleDungeons/plugin.cfg", "res://addons/godot_state_charts/plugin.cfg")
 
 [file_customization]
 
@@ -48,8 +48,7 @@ folder_colors={
 "res://addons/": "gray",
 "res://assets/": "red",
 "res://scenes/": "yellow",
-"res://scripts/": "blue",
-"res://trenchbroom/": "purple"
+"res://scripts/": "blue"
 }
 
 [gui]

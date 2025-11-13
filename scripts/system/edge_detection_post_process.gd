@@ -31,4 +31,3 @@ func set_highlight_color(color: Color) -> void:
 ## Set shadow color
 func set_shadow_color(color: Color) -> void:
 	effect_mesh.material_override.set_shader_parameter("shadow_color", Vector3(color.r, color.g, color.b))
-

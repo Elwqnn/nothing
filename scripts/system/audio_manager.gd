@@ -1,5 +1,5 @@
 class_name AudioManager extends Node
-## manages audio playback for music and sound effects with smooth transitions
+## manages audio playback for music and sound effects
 
 signal music_changed(track_name: String)
 signal music_finished
@@ -32,7 +32,6 @@ signal music_finished
 
 # audio library - maps names to file paths
 var audio_library: Dictionary = {
-	"feldup_findings": "res://assets/audio/musics/feldup-findings.mp3",
 	"neon_light_buzz": "res://assets/audio/sounds/neon-light-buzz.mp3",
 	"neon_light_flickering": "res://assets/audio/sounds/neon-light-flickering2.wav",
 }

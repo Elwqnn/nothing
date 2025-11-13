@@ -33,3 +33,4 @@ unique_name_in_owner = true
 [node name="UserInterface" type="CanvasLayer" parent="."]
 
 [node name="VHSPostProcess" parent="." instance=ExtResource("5_q6206")]
+unique_name_in_owner = true

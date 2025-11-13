@@ -2,8 +2,8 @@ extends Control
 ## Game HUD - displays gameplay information and prompts
 
 @onready var interaction_prompt: Label = %InteractionPrompt
-@onready var paranoia_bar: ProgressBar = %ParanoiaBar
-@onready var paranoia_label: Label = %ParanoiaLabel
+@onready var sanity_bar: ProgressBar = %SanityBar
+@onready var sanity_label: Label = %SanityLabel
 @onready var time_label: Label = %TimeLabel
 
 
@@ -31,16 +31,16 @@ func _connect_to_player() -> void:
 	interaction_raycast.interactable_detected.connect(_on_interactable_detected)
 	interaction_raycast.interactable_lost.connect(_on_interactable_lost)
 
-	# Find and connect to paranoia meter
-	var paranoia_meter = player.get_node_or_null("Components/ParanoiaMeter")
-	if paranoia_meter:
-		paranoia_meter.paranoia_changed.connect(_on_paranoia_changed)
-		paranoia_meter.critical_threshold_reached.connect(_on_paranoia_critical)
-		paranoia_meter.critical_threshold_cleared.connect(_on_paranoia_cleared)
-		# Initialize paranoia display
-		_on_paranoia_changed(paranoia_meter.paranoia_level)
+	# Find and connect to sanity meter
+	var sanity_meter = player.get_node_or_null("Components/SanityMeter")
+	if sanity_meter:
+		sanity_meter.sanity_changed.connect(_on_sanity_changed)
+		sanity_meter.critical_threshold_reached.connect(_on_sanity_critical)
+		sanity_meter.critical_threshold_cleared.connect(_on_sanity_cleared)
+		# Initialize sanity display
+		_on_sanity_changed(sanity_meter.sanity_level)
 	else:
-		push_warning("GameHUD: ParanoiaMeter not found on player")
+		push_warning("GameHUD: SanityMeter not found on player")
 
 
 func _connect_to_game_manager() -> void:
@@ -59,44 +59,44 @@ func _on_interactable_lost() -> void:
 	interaction_prompt.visible = false
 
 
-func _on_paranoia_changed(level: float) -> void:
-	# Update paranoia bar (inverted: 100% = safe, 0% = insane)
-	paranoia_bar.value = (1.0 - level) * 100.0
+func _on_sanity_changed(level: float) -> void:
+	# Update sanity bar (100% = fully sane, 0% = insane)
+	sanity_bar.value = level * 100.0
 
-	# Change color based on paranoia level
-	if level >= 0.85:
+	# Change color based on sanity level
+	if level <= 0.15:
 		# Critical - red and flashing
-		paranoia_bar.modulate = Color.RED
-		paranoia_label.modulate = Color.RED
-	elif level >= 0.6:
-		# High - orange
-		paranoia_bar.modulate = Color.ORANGE
-		paranoia_label.modulate = Color.ORANGE
-	elif level >= 0.3:
+		sanity_bar.modulate = Color.RED
+		sanity_label.modulate = Color.RED
+	elif level <= 0.4:
+		# Low - orange
+		sanity_bar.modulate = Color.ORANGE
+		sanity_label.modulate = Color.ORANGE
+	elif level <= 0.7:
 		# Medium - yellow
-		paranoia_bar.modulate = Color.YELLOW
-		paranoia_label.modulate = Color.WHITE
+		sanity_bar.modulate = Color.YELLOW
+		sanity_label.modulate = Color.WHITE
 	else:
-		# Low - normal
-		paranoia_bar.modulate = Color.WHITE
-		paranoia_label.modulate = Color.WHITE
+		# High - normal
+		sanity_bar.modulate = Color.WHITE
+		sanity_label.modulate = Color.WHITE
 
 
-func _on_paranoia_critical() -> void:
+func _on_sanity_critical() -> void:
 	# Make label flash when critical
 	var tween = create_tween()
 	tween.set_loops()
-	tween.tween_property(paranoia_label, "modulate:a", 0.3, 0.5)
-	tween.tween_property(paranoia_label, "modulate:a", 1.0, 0.5)
+	tween.tween_property(sanity_label, "modulate:a", 0.3, 0.5)
+	tween.tween_property(sanity_label, "modulate:a", 1.0, 0.5)
 
 
-func _on_paranoia_cleared() -> void:
+func _on_sanity_cleared() -> void:
 	# Stop flashing
 	var tween = create_tween()
-	tween.tween_property(paranoia_label, "modulate:a", 1.0, 0.2)
+	tween.tween_property(sanity_label, "modulate:a", 1.0, 0.2)
 
 
-func _on_time_updated(game_hour: int, time_string: String, seconds_remaining: float) -> void:
+func _on_time_updated(_game_hour: int, time_string: String, seconds_remaining: float) -> void:
 	time_label.text = time_string
 
 	# Flash red when under 60 seconds remaining

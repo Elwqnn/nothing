@@ -26,11 +26,7 @@ func _on_new_game_pressed() -> void:
 
 	# Load maze level and game HUD
 	Global.game_manager.change_ui_scene(GAME_HUD_SCENE)
-	await Global.game_manager.change_world_scene(MAZE_SCENE, true, true, false, false)
-
-	# Start game music
-	#if Global.audio_manager:
-		#Global.audio_manager.play_music("", 4.0, true)
+	await Global.game_manager.change_world_scene(MAZE_SCENE, false, true, false, false)
 
 	# Start the game timer and systems
 	Global.game_manager.start_game()

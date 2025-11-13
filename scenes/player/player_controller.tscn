@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://c88hf8gia5xqp" path="res://scripts/player/camera_effects.gd" id="4_3y0ka"]
 [ext_resource type="Script" uid="uid://danfqerxklbxv" path="res://scripts/player/components/interaction_raycast.gd" id="4_ggkdx"]
 [ext_resource type="Script" uid="uid://dhm8ial1kmbrv" path="res://scripts/player/components/mouse_capture.gd" id="6_rkuj1"]
-[ext_resource type="Script" path="res://scripts/player/components/paranoia_meter.gd" id="7_paranoia"]
+[ext_resource type="Script" path="res://scripts/player/components/sanity_meter.gd" id="7_sanity"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="8_2k8ub"]
 [ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="10_y4pjd"]
 [ext_resource type="Script" uid="uid://dsah0yop6t4x7" path="res://scripts/player/states/idle_state.gd" id="11_3y0ka"]
@@ -73,8 +73,8 @@ spot_angle_attenuation = 4.0
 [node name="MouseCapture" type="Node" parent="Components"]
 script = ExtResource("6_rkuj1")
 
-[node name="ParanoiaMeter" type="Node" parent="Components"]
-script = ExtResource("7_paranoia")
+[node name="SanityMeter" type="Node" parent="Components"]
+script = ExtResource("7_sanity")
 
 [node name="StateChart" type="Node" parent="."]
 script = ExtResource("8_2k8ub")

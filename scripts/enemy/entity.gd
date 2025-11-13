@@ -1,5 +1,5 @@
 extends CharacterBody3D
-## Invisible entity that hunts the player based on paranoia level
+## Invisible entity that hunts the player based on sanity level
 
 @export var base_speed: float = 2.0  # Slower than player walk speed (3.0)
 @export var chase_speed: float = 3.5  # Still slower than player sprint (5.0)
@@ -12,8 +12,8 @@ extends CharacterBody3D
 @onready var sound_timer: Timer = $SoundTimer
 
 var player: Node3D = null
-var paranoia_meter: Node = null
-var current_paranoia: float = 0.0
+var sanity_meter: Node = null
+var current_insanity: float = 0.0  # Inverted sanity (1.0 - sanity_level)
 var target_position: Vector3
 var is_active: bool = false
 
@@ -28,13 +28,13 @@ func _ready() -> void:
 		push_warning("Entity: Player not found")
 		return
 
-	# Find paranoia meter
-	paranoia_meter = player.get_node_or_null("Components/ParanoiaMeter")
-	if paranoia_meter:
-		paranoia_meter.paranoia_changed.connect(_on_paranoia_changed)
-		current_paranoia = paranoia_meter.paranoia_level
+	# Find sanity meter
+	sanity_meter = player.get_node_or_null("Components/SanityMeter")
+	if sanity_meter:
+		sanity_meter.sanity_changed.connect(_on_sanity_changed)
+		current_insanity = 1.0 - sanity_meter.sanity_level
 	else:
-		push_warning("Entity: ParanoiaMeter not found on player")
+		push_warning("Entity: SanityMeter not found on player")
 
 	# Wait for navigation to be ready
 	await get_tree().physics_frame
@@ -57,8 +57,8 @@ func _physics_process(delta: float) -> void:
 	var next_position = nav_agent.get_next_path_position()
 	var direction = (next_position - global_position).normalized()
 
-	# Calculate speed based on paranoia
-	var current_speed = lerp(base_speed, chase_speed, current_paranoia)
+	# Calculate speed based on insanity (low sanity = more aggressive)
+	var current_speed = lerp(base_speed, chase_speed, current_insanity)
 
 	# Move toward target
 	velocity = direction * current_speed
@@ -66,19 +66,19 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_target_reached() -> void:
-	# Choose new target based on paranoia level
-	if current_paranoia >= 0.85:
-		# Critical paranoia - always chase player
+	# Choose new target based on insanity level (low sanity = high insanity)
+	if current_insanity >= 0.85:
+		# Critical insanity (very low sanity) - always chase player
 		_set_player_target()
-	elif current_paranoia >= 0.5:
-		# Medium paranoia - mix of chasing and wandering
-		if randf() < current_paranoia:
+	elif current_insanity >= 0.5:
+		# Medium insanity - mix of chasing and wandering
+		if randf() < current_insanity:
 			_set_player_target()
 		else:
 			_set_biased_random_target()
 	else:
-		# Low paranoia - mostly random wander
-		if randf() < current_paranoia * 0.5:
+		# Low insanity (high sanity) - mostly random wander
+		if randf() < current_insanity * 0.5:
 			_set_biased_random_target()
 		else:
 			_set_random_target()
@@ -105,7 +105,7 @@ func _set_biased_random_target() -> void:
 	)
 
 	# Bias toward player
-	var bias_strength = current_paranoia * 0.7
+	var bias_strength = current_insanity * 0.7
 	var biased_direction = player_direction.lerp(random_offset.normalized(), 1.0 - bias_strength)
 
 	target_position = global_position + biased_direction * randf_range(8.0, 15.0)
@@ -127,19 +127,24 @@ func _set_random_target() -> void:
 
 
 func _on_wander_timer_timeout() -> void:
-	# Periodically update target based on paranoia
+	# Periodically update target based on insanity
 	_on_target_reached()
 
-	# Vary timer based on paranoia (more frequent updates when paranoid)
-	wander_timer.wait_time = lerp(5.0, 2.0, current_paranoia)
+	# Vary timer based on insanity (more frequent updates at low sanity)
+	wander_timer.wait_time = lerp(5.0, 2.0, current_insanity)
 
 
 func _on_sound_timer_timeout() -> void:
 	# Play sound cue
 	_play_growl_sound()
 
-	# Vary sound frequency based on paranoia (more frequent when chasing)
-	sound_timer.wait_time = lerp(12.0, 5.0, current_paranoia)
+	# Vary sound frequency based on insanity (more frequent when chasing)
+	sound_timer.wait_time = lerp(12.0, 5.0, current_insanity)
+
+
+func _on_sanity_changed(level: float) -> void:
+	# Update insanity (inverted sanity)
+	current_insanity = 1.0 - level
 
 
 func _play_growl_sound() -> void:
@@ -150,10 +155,6 @@ func _play_growl_sound() -> void:
 	# audio_player.pitch_scale = randf_range(0.8, 1.2)
 	# audio_player.play()
 	pass
-
-
-func _on_paranoia_changed(level: float) -> void:
-	current_paranoia = level
 
 
 func _on_catch_area_body_entered(body: Node3D) -> void:

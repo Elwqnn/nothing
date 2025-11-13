@@ -16,7 +16,7 @@ func _ready() -> void:
 func _on_game_lost(reason: String) -> void:
 	# Update reason label based on reason
 	match reason:
-		"Succumbed to paranoia":
+		"Lost all sanity":
 			reason_label.text = "You lost your mind."
 		"caught by entity":
 			reason_label.text = "You were caught."

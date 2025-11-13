@@ -19,9 +19,36 @@ script/source = "@tool
 extends Node
 
 func remove_unused_doors():
-	for door in $\"..\".get_doors():
-		if door.get_room_leads_to() == null:
-			door.door_node.queue_free()
+	var room = $\"..\" as DungeonRoom3D
+	if not room or not is_instance_valid(room.dungeon_generator):
+		return
+	
+	for door in room.get_doors():
+		if not is_instance_valid(door.door_node):
+			continue
+		
+		var door_connected = false
+		# Manually check if door connects to another room by iterating through all rooms
+		# This avoids calling get_room_at_pos() which may return freed instances
+		var all_rooms = room.dungeon_generator.get_all_placed_and_preplaced_rooms()
+		for other_room in all_rooms:
+			if not is_instance_valid(other_room) or other_room == room:
+				continue
+			
+			# Check if exit position is within other room's bounds
+			var other_room_aabb = other_room.get_grid_aabbi(false)
+			if other_room_aabb.contains_point(door.exit_pos_grid):
+				# Check if other room has a matching door
+				for other_door in other_room.get_doors():
+					if door.fits_other_door(other_door):
+						door_connected = true
+						break
+				if door_connected:
+					break
+		
+		if not door_connected:
+			if is_instance_valid(door.door_node):
+				door.door_node.queue_free()
 
 func _on_dungeon_done_generating():
 	remove_unused_doors()

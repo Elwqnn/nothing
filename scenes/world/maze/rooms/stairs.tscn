@@ -19,7 +19,8 @@ uv1_world_triplanar = true
 [node name="Stairs" type="Node3D"]
 script = ExtResource("1_tw80t")
 size_in_voxels = Vector3i(2, 2, 1)
-max_count = 20
+min_count = 1
+max_count = 3
 is_stair_room = true
 
 [node name="CSGBox3DLight" type="CSGBox3D" parent="."]
@@ -51,4 +52,4 @@ size = Vector3(2, 4, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, -4.75, 0)
 use_collision = true
 size = Vector3(14, 10, 9.5)
-num_stairs = 32
+num_stairs = 20

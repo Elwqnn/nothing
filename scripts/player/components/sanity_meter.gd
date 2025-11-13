@@ -1,26 +1,26 @@
 extends Node
-class_name ParanoiaMeter
+class_name SanityMeter
 
-## Tracks player's paranoia level based on sprint and mouse movement
-## Paranoia affects VHS shader intensity and entity behavior
+## Tracks player's sanity level based on sprint and mouse movement
+## Low sanity affects VHS shader intensity and entity behavior
 
-signal paranoia_changed(level: float)
+signal sanity_changed(level: float)
 signal critical_threshold_reached()
 signal critical_threshold_cleared()
 
-## Current paranoia level (0.0 to 1.0)
-@export var paranoia_level: float = 0.0
+## Current sanity level (0.0 to 1.0, where 1.0 is fully sane)
+@export var sanity_level: float = 1.0
 
-## Increase rates
-@export var sprint_increase_rate: float = 0.10  # 10% per second while sprinting
-@export var mouse_movement_sensitivity: float = 0.15  # How much fast mouse movement affects paranoia
+## Decrease rates (things that drain sanity)
+@export var sprint_decrease_rate: float = 0.10  # 10% per second while sprinting
+@export var mouse_movement_sensitivity: float = 0.15  # How much fast mouse movement affects sanity
 
-## Decrease rates
-@export var idle_decrease_rate: float = 0.05  # 5% per second while standing still
-@export var walking_decrease_rate: float = 0.02  # 2% per second while walking
+## Increase rates (things that restore sanity)
+@export var idle_increase_rate: float = 0.05  # 5% per second while standing still
+@export var walking_increase_rate: float = 0.02  # 2% per second while walking
 
 ## Critical threshold settings
-@export var critical_threshold: float = 0.85  # 85% paranoia
+@export var critical_threshold: float = 0.15  # 15% sanity (very low)
 @export var critical_duration_limit: float = 20.0  # Seconds before losing
 
 ## Internal state
@@ -30,11 +30,9 @@ var _critical_timer: float = 0.0
 var _in_critical_state: bool = false
 var _player_controller: CharacterBody3D = null
 var _camera_controller: Node = null
-var _last_mouse_delta: Vector2 = Vector2.ZERO
 
 ## VHS shader integration
 var _vhs_post_process: Node = null
-var _shader_tween: Tween = null
 
 
 func _ready() -> void:
@@ -58,20 +56,20 @@ func _process(delta: float) -> void:
 			var mouse_delta = mouse_capture.get_mouse_delta()
 			var mouse_speed = mouse_delta.length()
 
-			# Fast mouse movement increases paranoia
+			# Fast mouse movement decreases sanity
 			if mouse_speed > 10.0:  # Threshold for "fast" movement
-				var increase = (mouse_speed / 100.0) * mouse_movement_sensitivity * delta
-				_increase_paranoia(increase)
+				var decrease = (mouse_speed / 100.0) * mouse_movement_sensitivity * delta
+				_decrease_sanity(decrease)
 
-	# Update paranoia based on current state
+	# Update sanity based on current state
 	if _is_sprinting:
-		_increase_paranoia(sprint_increase_rate * delta)
+		_decrease_sanity(sprint_decrease_rate * delta)
 	elif not _is_moving:
-		# Standing still - decrease faster
-		_decrease_paranoia(idle_decrease_rate * delta)
+		# Standing still - increase faster
+		_increase_sanity(idle_increase_rate * delta)
 	else:
-		# Walking - decrease slower
-		_decrease_paranoia(walking_decrease_rate * delta)
+		# Walking - increase slower
+		_increase_sanity(walking_increase_rate * delta)
 
 	# Check critical threshold
 	_check_critical_threshold(delta)
@@ -84,7 +82,7 @@ func _connect_to_player_states() -> void:
 	# Find state machine and connect to states
 	var state_chart = _player_controller.get_node_or_null("StateChart")
 	if not state_chart:
-		push_warning("ParanoiaMeter: Could not find StateChart on player")
+		push_warning("SanityMeter: Could not find StateChart on player")
 		return
 
 	# Connect to sprinting state
@@ -127,24 +125,24 @@ func _on_walking_entered() -> void:
 	_is_sprinting = false
 
 
-func _increase_paranoia(amount: float) -> void:
-	var old_level = paranoia_level
-	paranoia_level = clamp(paranoia_level + amount, 0.0, 1.0)
+func _decrease_sanity(amount: float) -> void:
+	var old_level = sanity_level
+	sanity_level = clamp(sanity_level - amount, 0.0, 1.0)
 
-	if paranoia_level != old_level:
-		paranoia_changed.emit(paranoia_level)
+	if sanity_level != old_level:
+		sanity_changed.emit(sanity_level)
 
 
-func _decrease_paranoia(amount: float) -> void:
-	var old_level = paranoia_level
-	paranoia_level = clamp(paranoia_level - amount, 0.0, 1.0)
+func _increase_sanity(amount: float) -> void:
+	var old_level = sanity_level
+	sanity_level = clamp(sanity_level + amount, 0.0, 1.0)
 
-	if paranoia_level != old_level:
-		paranoia_changed.emit(paranoia_level)
+	if sanity_level != old_level:
+		sanity_changed.emit(sanity_level)
 
 
 func _check_critical_threshold(delta: float) -> void:
-	if paranoia_level >= critical_threshold:
+	if sanity_level <= critical_threshold:
 		_critical_timer += delta
 
 		if not _in_critical_state:
@@ -155,7 +153,7 @@ func _check_critical_threshold(delta: float) -> void:
 		if _critical_timer >= critical_duration_limit:
 			# Trigger lose condition via GameManager
 			if Global.game_manager:
-				Global.game_manager.trigger_lose("Succumbed to paranoia")
+				Global.game_manager.trigger_lose("Lost all sanity")
 	else:
 		if _in_critical_state:
 			_in_critical_state = false
@@ -167,49 +165,41 @@ func _update_vhs_effects() -> void:
 	if not _vhs_post_process:
 		return
 
-	# Map paranoia level to shader intensities
-	# Use exponential curves for more dramatic effect at high paranoia
-	var paranoia_squared = paranoia_level * paranoia_level
-	var paranoia_cubed = paranoia_squared * paranoia_level
+	# Map sanity level to shader intensities (inverted - low sanity = high effects)
+	# Use exponential curves for more dramatic effect at low sanity
+	var insanity_level = 1.0 - sanity_level  # Invert: 0 sanity = 1.0 insanity
+	var insanity_squared = insanity_level * insanity_level
+	var insanity_cubed = insanity_squared * insanity_level
 
-	# Cancel existing tween if any
-	if _shader_tween and _shader_tween.is_running():
-		_shader_tween.kill()
-
-	# Create smooth transitions for shader parameters
-	_shader_tween = create_tween()
-	_shader_tween.set_parallel(true)
-	_shader_tween.set_trans(Tween.TRANS_CUBIC)
-	_shader_tween.set_ease(Tween.EASE_OUT)
-
+	# Directly set shader parameters (no tween - updates every frame)
 	# Aberration: 2.0 to 5.0 (exponential)
-	var aberration = lerp(2.0, 5.0, paranoia_squared)
+	var aberration = lerp(2.0, 5.0, insanity_squared)
 	_vhs_post_process.set_aberration(aberration)
 
 	# Noise: 0.03 to 0.25 (exponential)
-	var noise = lerp(0.03, 0.25, paranoia_squared)
+	var noise = lerp(0.03, 0.25, insanity_squared)
 	_vhs_post_process.set_noise(noise)
 
-	# Distortion: 0.05 to 0.9 (cubic for extreme effect at high paranoia)
-	var distortion = lerp(0.05, 0.9, paranoia_cubed)
+	# Distortion: 0.05 to 0.9 (cubic for extreme effect at low sanity)
+	var distortion = lerp(0.05, 0.9, insanity_cubed)
 	_vhs_post_process.set_distortion(distortion)
 
 	# Flicker: 0.005 to 0.08 (exponential)
-	var flicker = lerp(0.005, 0.08, paranoia_squared)
+	var flicker = lerp(0.005, 0.08, insanity_squared)
 	_vhs_post_process.set_flicker(flicker)
 
 	# Ghost: 0.08 to 0.28 (exponential)
-	var ghost = lerp(0.08, 0.28, paranoia_squared)
+	var ghost = lerp(0.08, 0.28, insanity_squared)
 	_vhs_post_process.set_ghost(ghost)
 
 	# Vignette: subtle increase for darkness
-	var vignette = lerp(0.78, 0.95, paranoia_level)
+	var vignette = lerp(0.78, 0.95, insanity_level)
 	_vhs_post_process.set_vignette(vignette)
 
 
 ## Public API for external control
-func get_paranoia_level() -> float:
-	return paranoia_level
+func get_sanity_level() -> float:
+	return sanity_level
 
 
 func is_in_critical_state() -> bool:
@@ -221,9 +211,9 @@ func get_critical_time_remaining() -> float:
 
 
 func reset() -> void:
-	paranoia_level = 0.0
+	sanity_level = 1.0
 	_critical_timer = 0.0
 	_in_critical_state = false
 	_is_sprinting = false
 	_is_moving = false
-	paranoia_changed.emit(paranoia_level)
+	sanity_changed.emit(sanity_level)
